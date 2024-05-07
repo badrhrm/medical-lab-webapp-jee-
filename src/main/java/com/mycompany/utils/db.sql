@@ -1,0 +1,57 @@
+CREATE DATABASE IF NOT EXISTS medical_lab_webapp_jee;
+USE medical_lab_webapp_jee;
+
+CREATE TABLE IF NOT EXISTS admins (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(30) NOT NULL UNIQUE,
+    email VARCHAR(50) UNIQUE,
+    password VARCHAR(30) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS patients (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fName VARCHAR(25) NOT NULL,
+    lName VARCHAR(25) NOT NULL,
+    cin VARCHAR(12) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    phone VARCHAR(10),
+    gender VARCHAR(6) CHECK (gender IN ('Male', 'Female')),
+    birthdate DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tests (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    label VARCHAR(25) NOT NULL UNIQUE,
+    price DECIMAL(8,2),
+    result_after INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS appointments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_patient INT,
+    day DATE,
+    hour VARCHAR(6),
+    state VARCHAR(10), -- here it needs to add check(pending,....)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_patient) REFERENCES patients(id)
+);
+
+CREATE TABLE IF NOT EXISTS appointment_tests (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_appointment INT,
+    id_test INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_appointment) REFERENCES appointments(id),
+    FOREIGN KEY (id_test) REFERENCES tests(id)
+);
+
+INSERT INTO admins (username, password) VALUES ('admin', '123');
+
