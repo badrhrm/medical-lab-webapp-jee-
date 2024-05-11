@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "patients_jee")
 public class Patient {
 
     @Id
@@ -26,6 +26,9 @@ public class Patient {
 
     @Column(name = "email", nullable = false, unique = true, length=50)
     private String email;
+    
+    @Column(name = "password", nullable = false, unique = true, length=255)
+    private String password;
 
     @Column(name = "phone", length = 10)
     private String phone;
@@ -48,12 +51,12 @@ public class Patient {
 //    public void setAppointments(Set<Appointment> appointments) {
 //        this.appointments = appointments;
 //    }
+    
+    // hashset is the right datastructure for this due to unique elements and not needing order and for fast access
+    @OneToMany(mappedBy = "patient")
+    private Set<PatientToken> tokens = new HashSet<>();
 
     // Getters and setters
-    @Override
-    public String toString() {
-        return "Patient{" + "id=" + id + ", fName=" + fName + ", lName=" + lName + ", cin=" + cin + ", email=" + email + ", phone=" + phone + ", gender=" + gender + ", birthdate=" + birthdate + '}';
-    }
 
     public int getId() {
         return id;
@@ -63,19 +66,19 @@ public class Patient {
         this.id = id;
     }
 
-    public String getfName() {
+    public String getFName() {
         return fName;
     }
 
-    public void setfName(String fName) {
+    public void setFName(String fName) {
         this.fName = fName;
     }
 
-    public String getlName() {
+    public String getLName() {
         return lName;
     }
 
-    public void setlName(String lName) {
+    public void setLName(String lName) {
         this.lName = lName;
     }
 
@@ -94,8 +97,16 @@ public class Patient {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public String getPassword() {
+		return password;
+	}
 
-    public String getPhone() {
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPhone() {
         return phone;
     }
 
@@ -118,5 +129,28 @@ public class Patient {
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
+
+	public Set<PatientToken> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(Set<PatientToken> tokens) {
+		this.tokens = tokens;
+	}
+    
+	@Override
+	public String toString() {
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("ID: ").append(id).append("\n");
+	    sb.append("First Name: ").append(fName).append("\n");
+	    sb.append("Last Name: ").append(lName).append("\n");
+	    sb.append("CIN: ").append(cin).append("\n");
+	    sb.append("Email: ").append(email).append("\n");
+	    sb.append("Phone: ").append(phone).append("\n");
+	    sb.append("Gender: ").append(gender).append("\n");
+	    sb.append("Birthdate: ").append(birthdate).append("\n");
+	    return sb.toString();
+	}
+
     
 }

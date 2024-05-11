@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "admins")
+@Table(name = "admins_jee")
 public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class Admin {
     private String username;
     @Column(name="email", nullable = true, unique = true, length=50)
     private String email;
-    @Column(name = "password", nullable = false, unique = true, length=30)
+    @Column(name = "password", nullable = false, unique = true, length=255)
     private String password;
 	public long getId() {
 		return id;
