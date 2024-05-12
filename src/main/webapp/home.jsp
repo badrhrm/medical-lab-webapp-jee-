@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@page import="com.mycompany.models.Patient"%>
+<%@page import="com.mycompany.models.Admin"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,15 @@
     if (patient != null) {
 %>
     <p>Hello <%= patient.getFName() %></p>
+<% 
+    } 
+%>
+
+<%
+	Admin admin = (Admin) request.getSession().getAttribute("admin");
+    if (admin != null) {
+%>
+    <p>Hello <%= admin.getUsername() %></p>
 <% 
     } 
 %>
