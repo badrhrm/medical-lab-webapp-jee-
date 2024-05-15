@@ -109,15 +109,18 @@ public class AppointmentDAO {
     public List<Appointment> getFuturApt() {
     	try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
-            Query query = session.createNativeQuery("""
-            		from appointappointments_jeements
-            		where day >= CURDATE() state=:state
+            Query<Appointment> query = session.createNativeQuery("""
+            		select *
+            		from appointments_jee
+            		where day >= CURDATE() and state=:state
             		""", Appointment.class);
             query.setParameter("state", AptState.PENDING);
             List<Appointment> apts = query.getResultList();
+            System.out.println(apts);
             session.getTransaction().commit();
             return apts;
         } catch (Exception e) {
+        	System.out.println(e.getLocalizedMessage());
             return null;
         }
     }
@@ -131,7 +134,7 @@ public class AppointmentDAO {
     public Appointment getAppointByDateHour(LocalDate date, LocalTime hour) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
-            Query query = session.createNativeQuery("from appointappointments_jeements where day=:day and hour=:hour and state=:state", Appointment.class);
+            Query query = session.createNativeQuery("from appointments_jee where day=:day and hour=:hour and state=:state", Appointment.class);
             query.setParameter("day", date);
             query.setParameter("hour", hour);
             query.setParameter("state", AptState.PENDING);

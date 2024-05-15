@@ -77,6 +77,10 @@ public class Patient {
     public String getLName() {
         return lName;
     }
+    
+    public String getFullName() {
+    	return fName + lName;
+    }
 
     public void setLName(String lName) {
         this.lName = lName;

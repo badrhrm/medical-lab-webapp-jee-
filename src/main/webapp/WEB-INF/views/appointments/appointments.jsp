@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	
+	
+<%@page import="com.mycompany.models.Appointment"%>
+<%@page import="java.util.List"%>
+	
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,6 +92,18 @@
 
 					<div class="card shadow mb-4">
 						<div class="card-body">
+							<%
+							String error = (String) request.getAttribute("error");
+							if(error != null) {
+							%>
+							<div>
+							<h2>${ error }</h2>
+							</div>
+							<%
+							} else {
+								List<Appointment> apts = (List<Appointment>) request.getAttribute("apts");
+								
+							%>
 							<div class="table-responsive">
 								<table class="table table-bordered" id="dataTable" width="100%"
 									cellspacing="0">
@@ -104,25 +121,28 @@
 										</tr>
 									</thead>
 									<tbody>
+									<%
+									for(Appointment apt: apts) {
+									%>
 										<tr>
-											<td>Tiger Nixon</td>
-											<td>JT67545</td>
-											<td>0651948755</td>
-											<td>13-05-2024</td>
-											<td>09:30</td>
-											<td>10:30</td>
-											<td>Blood Test</td>
-											<td>Pending</td>
+											<td><%=apt.getPatient().getFName() %></td>
+											<td><%=apt.getPatient().getCin() %></td>
+											<td><%=apt.getPatient().getPhone() %></td>
+											<td><%=apt.getDay().toString() %></td>
+											<td><%=apt.getHour().toString() %></td>
+											<td><%=apt.getEnd().toString() %></td>
+											<td><%=apt.getTest().getLabel() %></td>
+											<td><%=apt.getState() %></td>
 											<td>
 												<div class="d-flex justify-content-end align-items-end">
 
 													<a
-														href="${pageContext.request.contextPath}/appointments/update/{id}"
+														href="${pageContext.request.contextPath}/appointments/update?id=<%=apt.getId() %>"
 														class="btn btn-danger btn-icon-split"> <span
 														class="icon text-white-50"> <i class="fas fa-trash"></i>
 													</span>
 													</a> <a
-														href="${pageContext.request.contextPath}/appointments/delete/{id}"
+														href="${pageContext.request.contextPath}/appointments/delete?id=<%=apt.getId() %>"
 														class="btn btn-warning btn-icon-split ml-2"> <span
 														class="icon text-white-50"> <i class="fas fa-edit"></i>
 													</span>
@@ -131,9 +151,14 @@
 												</div>
 											</td>
 										</tr>
+										
+										<%
+									}
+										%>
 									</tbody>
 								</table>
 							</div>
+							<% } %>
 						</div>
 					</div>
 

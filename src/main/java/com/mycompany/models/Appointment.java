@@ -73,9 +73,8 @@ public class Appointment {
         this.day = day;
     }
 
-    public String getHour() {
-    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return hour.format(formatter);
+    public LocalTime getHour() {
+    	return hour;
     }
 
     public void setHour(LocalTime hour) {
