@@ -54,9 +54,9 @@ public class AppointmentController extends HttpServlet {
 				// retrieve  available apts
 				List<Appointment> apts = dao.getFuturApt();
 				if( apts != null ) {
-					
+					request.setAttribute("apts", apts);
 				} else {
-					
+					request.setAttribute("error", "Oops! Something went wong!");
 				}
 				// return responce with data
 				request.getRequestDispatcher("/WEB-INF/views/appointments/appointments.jsp").forward(request, response);

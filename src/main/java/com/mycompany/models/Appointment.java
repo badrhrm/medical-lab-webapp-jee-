@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.time.format.DateTimeFormatter;
 /**
  *
  * @author yusef
@@ -73,8 +73,9 @@ public class Appointment {
         this.day = day;
     }
 
-    public LocalTime getHour() {
-        return hour;
+    public String getHour() {
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return hour.format(formatter);
     }
 
     public void setHour(LocalTime hour) {
@@ -111,6 +112,11 @@ public class Appointment {
 
     public Test getTest() {
         return test;
+    }
+    
+    public String getEnd() {
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    	return this.getHour().plusMinutes(this.getTest().getDuration()).format(formatter);
     }
     
     
