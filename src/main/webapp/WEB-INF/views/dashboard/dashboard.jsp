@@ -25,7 +25,7 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
-        <<jsp:include page="/WEB-INF/views/components/sidebar.jsp" />
+        <jsp:include page="/WEB-INF/views/components/sidebar.jsp" />
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->

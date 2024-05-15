@@ -14,7 +14,7 @@
 	<a href="${pageContext.request.contextPath}/login"><button>Login</button></a>
 	<a href="${pageContext.request.contextPath}/logout"><button>Logout</button></a>
 	<a href="${pageContext.request.contextPath}/dashboard"><button>dashboard</button></a>
-	<a href="${pageContext.request.contextPath}/appointment"><button>Appointment</button></a>
+	<a href="${pageContext.request.contextPath}/appointments"><button>Appointment</button></a>
 	<a href="${pageContext.request.contextPath}/patients"><button>Patient</button></a>
 	<a href="${pageContext.request.contextPath}/tests"><button>Tests</button></a>
 

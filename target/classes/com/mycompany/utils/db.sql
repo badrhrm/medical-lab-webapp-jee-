@@ -1,4 +1,5 @@
 --  DROP DATABASE medical_lab_webapp_jee;
+DROP DATABASE IF EXISTS medical_lab_webapp_jee;
 CREATE DATABASE IF NOT EXISTS medical_lab_webapp_jee;
 USE medical_lab_webapp_jee;
 
@@ -16,10 +17,10 @@ CREATE TABLE IF NOT EXISTS patients_jee (
     fName VARCHAR(25) NOT NULL,
     lName VARCHAR(25) NOT NULL,
     cin VARCHAR(12) NOT NULL UNIQUE,
-    email VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL UNIQUE, -- added password so patient can authenticate 
+    email VARCHAR(50),
+    password VARCHAR(255),
     phone VARCHAR(10),
-    gender VARCHAR(6) CHECK (gender IN ('Male', 'Female')),
+    gender VARCHAR(6) CHECK (gender IN ('male', 'female')),
     birthdate DATE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -45,23 +46,15 @@ CREATE TABLE IF NOT EXISTS tests_jee (
 
 CREATE TABLE IF NOT EXISTS appointments_jee (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    id_patient INT,
+    patient_id INT,
+    test_id INT,
     day DATE,
     hour VARCHAR(6),
     state VARCHAR(10), -- here it needs to add check(pending,....)
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_patient) REFERENCES patients_jee(id)
-);
-
-CREATE TABLE IF NOT EXISTS appointment_tests_jee (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_appointment INT,
-    id_test INT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_appointment) REFERENCES appointments_jee(id),
-    FOREIGN KEY (id_test) REFERENCES tests_jee(id)
+    FOREIGN KEY (patient_id) REFERENCES patients_jee(id),
+    FOREIGN KEY (test_id) REFERENCES tests_jee(id)
 );
 
 INSERT INTO admins_jee (username, email, password) VALUES ('admin','ad@ad.ad', 'adAD@@12');
