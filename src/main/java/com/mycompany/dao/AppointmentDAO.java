@@ -2,9 +2,11 @@ package com.mycompany.dao;
 
 import java.time.LocalDate;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import com.mycompany.models.Appointment;
+import com.mycompany.models.Patient;
 import com.mycompany.utils.AptState;
 import com.mycompany.utils.HibernateUtil;
 
@@ -48,24 +50,41 @@ public class AppointmentDAO {
      * @param appoint
      * @return 
      */
+//    public boolean updateAppoint(Appointment appoint) {
+//        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+//            session.beginTransaction();
+//            Query query = session.createNativeQuery("""
+//                    update appointments_jee
+//                    set patient=:patient, day=:day, hour=:hour, state=:state, updatedAt=:updated_at 
+//                    where id=:id
+//            """, Appointment.class);
+//            query.setParameter("id", appoint.getId());
+//            query.setParameter("patient", appoint.getPatient());
+//            query.setParameter("day", appoint.getDay());
+//            query.setParameter("hour", appoint.getHour());
+//            query.setParameter("state", appoint.getState());
+//            query.setParameter("updated_at", LocalDateTime.now());
+//            int rowCount = query.executeUpdate();
+//            session.getTransaction().commit();
+//            return rowCount > 0;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
     public boolean updateAppoint(Appointment appoint) {
+        Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
-            Query query = session.createNativeQuery("""
-                    update appointments_jee
-                    set patient=:patient, day=:day, hour=:hour, state=:state, updatedAt=:updated_at 
-                    where id=:id
-            """, Appointment.class);
-            query.setParameter("id", appoint.getId());
-            query.setParameter("patient", appoint.getPatient());
-            query.setParameter("day", appoint.getDay());
-            query.setParameter("hour", appoint.getHour());
-            query.setParameter("state", appoint.getState());
-            query.setParameter("updated_at", LocalDateTime.now());
-            int rowCount = query.executeUpdate();
-            session.getTransaction().commit();
-            return rowCount > 0;
+            transaction = session.beginTransaction();
+            
+            session.update(appoint);
+            
+            transaction.commit();
+            return true;
         } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
             return false;
         }
     }

@@ -97,5 +97,16 @@ public class PatientDAO {
             return null;
         }
     }
+    
+    public Patient getPatientByCin(String cin) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Patient WHERE cin = :cin", Patient.class)
+                    .setParameter("cin", cin)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 

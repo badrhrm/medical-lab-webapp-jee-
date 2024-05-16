@@ -30,6 +30,7 @@ public class AppointmentController extends HttpServlet {
 	private AppointmentDAO dao = null;
 	private TestDAO tdao = null;
 	private PatientDAO pdao = null;
+	List<String> errors;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -39,6 +40,7 @@ public class AppointmentController extends HttpServlet {
 		dao = new AppointmentDAO();
 		tdao = new TestDAO();
 		pdao = new PatientDAO();
+		errors = new ArrayList<String>();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -66,18 +68,21 @@ public class AppointmentController extends HttpServlet {
 			// get apt to be updated.. if not exits redirect to 404
 			
 			if (id == null && id.isEmpty()) {
-				request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
+				errors.add("No patient with the given id");
+				request.setAttribute("errors", errors);
 				aptHome(request, response);
 			} 
 			
-			Patient p = pdao.getPatientById(Integer.parseInt(id));
-			if (p == null) {
-				request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
+			Appointment appoint = dao.getAppointById(Integer.parseInt(id));
+			if (appoint == null) {
+				errors.add("No appoint with the given id");
+				request.setAttribute("errors", errors);
 				aptHome(request, response);
 			}
 			
-			request.setAttribute("patient", p);
-			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
+			request.setAttribute("appointment", appoint);
+			System.out.println("appoint inside update recovered :\n" + appoint);
+			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentedit.jsp").forward(request,
 					response);
 			// send it with the response to fill the form inputs
 
@@ -116,7 +121,7 @@ public class AppointmentController extends HttpServlet {
 
 			Patient p = pdao.getPatientById(test_id);
 			if (p == null) {
-				List<String> errors = new ArrayList<String>();
+				//List<String> errors = new ArrayList<String>();
 				errors.add("no patient with the given cin");
 				request.setAttribute("errors", errors);
 				request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
@@ -142,17 +147,15 @@ public class AppointmentController extends HttpServlet {
 				request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
 						response);
 			} else {
-				request.setAttribute("errors", new ArrayList().add("Appointment was not saved"));
+				errors.add("Appointment was not saved");
+				request.setAttribute("errors", errors);
 				request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
 						response);
 			}
 
 			break;
 		case "/appointments/edit":
-			// retrieve id from params
-			// get apt to be updated.. if not exits redirect to 404
-			// send it with the response to fill the form inputs
-			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
+			editAppoint(request, response);
 			break;
 
 		default:
@@ -182,18 +185,104 @@ public class AppointmentController extends HttpServlet {
 		System.out.println("----------------------------------");
 		// get apt to be deleted.. if not exits redirect to 404
 		if (id == null && id.isEmpty()) {
-			request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
+			errors.add("No patient with the given id");
+			request.setAttribute("errors", errors);
 			aptHome(request, response);
 		} 
 		
-		Patient p = pdao.getPatientById(Integer.parseInt(id));
-		if (p == null) {
-			request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
+		Appointment appoint = dao.getAppointById(Integer.parseInt(id));
+		if (appoint == null) {
+			errors.add("No appoint with the given id");
+			request.setAttribute("errors", errors);
 			aptHome(request, response);
 		}
+		System.out.println("appoint id is : "+ id);
+		System.out.println("appoint is : \n"+appoint);
+		dao.deleteAppoint(appoint);
+		response.sendRedirect(request.getContextPath() + "/appointments");
+	}
+	private void  editAppoint(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String appoint_id = request.getParameter("id");
+		Appointment appointment = dao.getAppointById(Integer.parseInt(appoint_id));
+		System.out.println("////////////////////////////////");
+		System.out.println("appointment object before update: \n"+appointment);
+		System.out.println("////////////////////////////////");
 		
-		pdao.deletePatient(p);
-		response.sendRedirect(request.getContextPath() + "/apts");
+		String from = request.getParameter("from");
+		String day = request.getParameter("day");
+		String cin = request.getParameter("cin");
+		int test_id = Integer.parseInt(request.getParameter("test"));
+		
+//		System.out.println("appoint_id is : \n"+appoint_id);
+//		System.out.println("starting_from_time is : \n"+from);
+//		System.out.println("day is : \n"+day);
+//		System.out.println("cin is : \n"+cin);
+//		System.out.println("test_id is : \n"+test_id);
+		
+		LocalTime startTime = LocalTime.parse(from);
+  		LocalDate appointmentDay = LocalDate.parse(day);
+		Patient patient = pdao.getPatientByCin(cin);
+		if(patient == null) {
+			System.out.println("patient retrieved in edit is null");
+			return;
+		}
+		Test test = tdao.getTestById(test_id);
+		if(test == null) {
+			System.out.println("test retrieved in edit is null");
+			return;
+		}
+
+  		appointment.setHour(startTime);
+  		appointment.setDay(appointmentDay);
+  		appointment.setPatient(patient);
+  		appointment.setTest(test);
+  		System.out.println("////////////////////////////////");
+  		System.out.println("appointment object after update :\n"+appointment);
+  		System.out.println("////////////////////////////////");
+  		
+  		dao.updateAppoint(appointment);
+  		response.sendRedirect(request.getContextPath() + "/appointments");
+
+
+//		appointment.setDay(day);
+//		appointment.setHour(starting_from_time);
+
+
+//		Patient p = pdao.getPatientById(test_id);
+//		if (p == null) {
+//			//List<String> errors = new ArrayList<String>();
+//			errors.add("no patient with the given cin");
+//			request.setAttribute("errors", errors);
+//			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
+//					response);
+//			return;
+//		}
+//
+//		// get test
+//		Test t = tdao.getTestById(test_id);
+//
+//		// check if apt availabe (later)
+//
+//		// save apt
+//		Appointment newapt = new Appointment();
+//		newapt.setPatient(p);
+//		newapt.setTest(t);
+//		newapt.setDay(LocalDate.parse(day));
+//		newapt.setHour(LocalTime.parse(time));
+//		newapt.setState(AptState.PENDING);
+//
+//		if (dao.saveAppoint(newapt)) {
+//			request.setAttribute("success", "Appointment added successfully");
+//			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
+//					response);
+//		} else {
+//			errors.add("Appointment was not saved");
+//			request.setAttribute("errors", errors);
+//			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
+//					response);
+//		}
+
 	}
 
 }
