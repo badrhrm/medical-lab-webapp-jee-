@@ -5,6 +5,8 @@ import com.mycompany.utils.HibernateUtil;
 
 import java.util.List;
 
+import javax.management.Query;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -82,6 +84,17 @@ public class PatientDAO {
             }
             e.printStackTrace();
             return false;
+        }
+    }
+    
+    public Patient getPatientById(int id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Patient WHERE id = :id", Patient.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

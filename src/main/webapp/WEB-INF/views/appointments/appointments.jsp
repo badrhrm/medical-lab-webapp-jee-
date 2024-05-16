@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	
-	
+
+
 <%@page import="com.mycompany.models.Appointment"%>
 <%@page import="java.util.List"%>
-	
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -81,7 +81,8 @@
 					<div class="row p-2">
 						<div class="container d-flex justify-content-end align-items-end">
 
-							<a href="${pageContext.request.contextPath}/appointments/new" class="btn btn-primary btn-icon-split ml-2"> <span
+							<a href="${pageContext.request.contextPath}/appointments/new"
+								class="btn btn-primary btn-icon-split ml-2"> <span
 								class="icon text-white-50"> <i class="fas fa-plus"></i>
 							</span> <span class="text">New </span>
 							</a>
@@ -94,15 +95,14 @@
 						<div class="card-body">
 							<%
 							String error = (String) request.getAttribute("error");
-							if(error != null) {
+							if (error != null) {
 							%>
 							<div>
-							<h2>${ error }</h2>
+								<h2>${ error }</h2>
 							</div>
 							<%
 							} else {
-								List<Appointment> apts = (List<Appointment>) request.getAttribute("apts");
-								
+							List<Appointment> apts = (List<Appointment>) request.getAttribute("apts");
 							%>
 							<div class="table-responsive">
 								<table class="table table-bordered" id="dataTable" width="100%"
@@ -121,28 +121,29 @@
 										</tr>
 									</thead>
 									<tbody>
-									<%
-									for(Appointment apt: apts) {
-									%>
+										<%
+										if (apts != null) {
+											for (Appointment apt : apts) {
+										%>
 										<tr>
-											<td><%=apt.getPatient().getFName() %></td>
-											<td><%=apt.getPatient().getCin() %></td>
-											<td><%=apt.getPatient().getPhone() %></td>
-											<td><%=apt.getDay().toString() %></td>
-											<td><%=apt.getHour().toString() %></td>
-											<td><%=apt.getEnd().toString() %></td>
-											<td><%=apt.getTest().getLabel() %></td>
-											<td><%=apt.getState() %></td>
+											<td><%=apt.getPatient().getFName()%></td>
+											<td><%=apt.getPatient().getCin()%></td>
+											<td><%=apt.getPatient().getPhone()%></td>
+											<td><%=apt.getDay().toString()%></td>
+											<td><%=apt.getHour().toString()%></td>
+											<td><%=apt.getEnd().toString()%></td>
+											<td><%=apt.getTest().getLabel()%></td>
+											<td><%=apt.getState()%></td>
 											<td>
 												<div class="d-flex justify-content-end align-items-end">
 
 													<a
-														href="${pageContext.request.contextPath}/appointments/update?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments/delete?id=<%=apt.getId() %>"
 														class="btn btn-danger btn-icon-split"> <span
 														class="icon text-white-50"> <i class="fas fa-trash"></i>
 													</span>
 													</a> <a
-														href="${pageContext.request.contextPath}/appointments/delete?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments/update?id=<%=apt.getId() %>"
 														class="btn btn-warning btn-icon-split ml-2"> <span
 														class="icon text-white-50"> <i class="fas fa-edit"></i>
 													</span>
@@ -151,16 +152,38 @@
 												</div>
 											</td>
 										</tr>
-										
+
 										<%
-									}
+										}
+										}
 										%>
 									</tbody>
 								</table>
 							</div>
-							<% } %>
+							<%
+							}
+							%>
 						</div>
 					</div>
+
+					<%
+					List<String> errors = (List<String>) request.getAttribute("errors");
+					if (errors != null) {
+					%>
+					<div class="row mt-5">
+						<ul class="text-danger">
+							<%
+							for (String err : errors) {
+							%>
+							<li>${ err }</li>
+							<%
+							}
+							%>
+						</ul>
+					</div>
+					<%
+					}
+					%>
 
 					<!-- TODO: custom content here -->
 

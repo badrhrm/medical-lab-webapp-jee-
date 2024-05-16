@@ -38,6 +38,7 @@ public class AppointmentDAO {
             return rowCount > 0;
 
         } catch (Exception e) {
+        	System.err.println(e.getLocalizedMessage());
             return false;
         }
     }
@@ -113,6 +114,7 @@ public class AppointmentDAO {
             		select *
             		from appointments_jee
             		where day >= CURDATE() and state=:state
+            		order by day, hour
             		""", Appointment.class);
             query.setParameter("state", AptState.PENDING);
             List<Appointment> apts = query.getResultList();

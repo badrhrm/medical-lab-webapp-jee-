@@ -58,7 +58,9 @@ CREATE TABLE IF NOT EXISTS appointments_jee (
     FOREIGN KEY (test_id) REFERENCES tests_jee(id)
 );
 
-INSERT INTO admins_jee (`id`, `label`, `price`, `duration`, `days_to_get_result`, `description`, `created_at`, `updated_at`) VALUES
+INSERT INTO admins_jee (username, email, password) VALUES ('admin','ad@ad.ad', 'adAD@@12');
+
+INSERT INTO tests_jee (`id`, `label`, `price`, `duration`, `days_to_get_result`, `description`, `created_at`, `updated_at`) VALUES
 (1, 'Blood Test', 888.00, 60, 3, 'A standard blood test to check various parameters. ', '2024-04-24 23:21:50', '2024-04-27 20:57:29'),
 (2, 'Urine Test	', 500.00, 40, 5, 'Analysis of urine sample for various health markers.', '2024-04-25 00:40:07', '2024-04-27 20:58:45'),
 (3, 'MRI Scan', 700.00, 54, 6, 'Magnetic Resonance Imaging for detailed body scans.', '2024-04-25 00:42:02', '2024-04-27 21:00:12'),
