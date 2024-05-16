@@ -16,7 +16,7 @@ import com.mycompany.models.Test;
  * Servlet implementation class TestController
  */
 
-@WebServlet({"/tests","/tests/*"})
+@WebServlet({"/tests","/tests/new"})
 public class TestController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private final TestDao testDao;
@@ -35,7 +35,9 @@ public class TestController extends HttpServlet {
 
         try {
             switch (action) {
-            	
+            case "/tests":
+            	listTests(request, response);
+                break;
                 case "/tests/new":
                     showNewForm(request, response);
                     break;
@@ -52,7 +54,7 @@ public class TestController extends HttpServlet {
                     updateTest(request, response);
                     break;
                 default:
-                    listTests(request, response);
+                	System.out.println("no path");
                     break;
             }
         } catch (Exception ex) {
@@ -68,7 +70,8 @@ public class TestController extends HttpServlet {
     }
 
     private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/tests/testform.jsp").forward(request, response);
+    	System.out.println("show new form function");
+    	request.getRequestDispatcher("/WEB-INF/views/tests/testform.jsp").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
