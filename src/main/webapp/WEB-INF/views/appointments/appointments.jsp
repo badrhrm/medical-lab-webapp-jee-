@@ -81,7 +81,7 @@
 					<div class="row p-2">
 						<div class="container d-flex justify-content-end align-items-end">
 
-							<a href="${pageContext.request.contextPath}/appointments/new"
+							<a href="${pageContext.request.contextPath}/appointments_new"
 								class="btn btn-primary btn-icon-split ml-2"> <span
 								class="icon text-white-50"> <i class="fas fa-plus"></i>
 							</span> <span class="text">New </span>
@@ -150,12 +150,12 @@
 												<div class="d-flex justify-content-end align-items-end">
 
 													<a
-														href="${pageContext.request.contextPath}/appointments/delete?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments_delete?id=<%=apt.getId() %>"
 														class="btn btn-danger btn-icon-split"> <span
 														class="icon text-white-50"> <i class="fas fa-trash"></i>
 													</span>
 													</a> <a
-														href="${pageContext.request.contextPath}/appointments/update?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments_update?id=<%=apt.getId() %>"
 														class="btn btn-warning btn-icon-split ml-2"> <span
 														class="icon text-white-50"> <i class="fas fa-edit"></i>
 													</span>

@@ -23,8 +23,8 @@ import com.mycompany.utils.AptState;
 /**
  * Servlet implementation class AppointmentController
  */
-@WebServlet({ "/appointments", "/appointments/new", "/appointments/add", "/appointments/update",
-		"/appointments/edit", "/appointments/delete" })
+@WebServlet({ "/appointments", "/appointments_new", "/appointments_add", "/appointments_update",
+		"/appointments_edit", "/appointments_delete" })
 public class AppointmentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private AppointmentDAO dao = null;
@@ -52,20 +52,20 @@ public class AppointmentController extends HttpServlet {
 		// TODO Auto-generated method stub
 		String action = request.getServletPath();
 		switch (action) {
-		case "/appointments/new":
+		case "/appointments_new":
 			// get all tests
 			List<Test> tests = tdao.getAllTests();
 			request.setAttribute("tests", tests);
 			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
 
 			break;
-		case "/appointments/update":
+		case "/appointments_update":
 			// retrieve id from params
 			handleUpdate(request, response);
 			// send it with the response to fill the form inputs
 
 			break;
-		case "/appointments/delete":
+		case "/appointments_delete":
 			// retrieve id from params
 			handleDelete(request, response);
 			// redirect to /appointments
@@ -88,11 +88,12 @@ public class AppointmentController extends HttpServlet {
 		String action = request.getServletPath();
 
 		switch (action) {
-		case "/appointments/add":
+		case "/appointments_add":
 			// get all tests
 			handleAdd(request, response);
 			break;
-		case "/appointments/edit":
+			
+		case "/appointments_edit":
 			// retrieve id from params
 			// get apt to be updated.. if not exits redirect to 404
 			// send it with the response to fill the form inputs
@@ -174,7 +175,7 @@ public class AppointmentController extends HttpServlet {
 			errors.add("no patient with the given cin");
 			request.setAttribute("errors", errors);
 			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
-			break;
+			return;
 		}
 
 		// get test
