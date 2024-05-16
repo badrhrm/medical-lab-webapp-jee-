@@ -116,7 +116,6 @@ public class AppointmentDAO {
             		""", Appointment.class);
             query.setParameter("state", AptState.PENDING);
             List<Appointment> apts = query.getResultList();
-            System.out.println(apts);
             session.getTransaction().commit();
             return apts;
         } catch (Exception e) {
