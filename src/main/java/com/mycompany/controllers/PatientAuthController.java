@@ -28,7 +28,8 @@ import com.mycompany.utils.SecurityUtil;
 /**
  * Servlet implementation class PatientAuthController
  */
-@WebServlet({"/login", "/logout", "/signup", "/signupVerification"})
+@WebServlet({"/login", "/logout", "/signup", "/signupVerification", "/forget_password", 
+	"/sendPasswordResetEmail","/resetPasswordVerification", "/changePassword"})
 public class PatientAuthController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private PatientDAO patientDAO = new PatientDAO();
@@ -54,16 +55,6 @@ public class PatientAuthController extends HttpServlet {
 	        case "/login":
 	            request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
 	            break;
-	        case "/signup":
-	            request.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(request, response);
-	            break;
-	        case "/signupVerification":
-	        	System.out.println("GET request received for signupVerification");
-	        	System.out.println("sending token for post request");
-	            String token = request.getParameter("token");
-	            System.out.println("Token: " + token);
-	            doPost(request, response);
-	            break;
 	        case "/logout":
 	        	System.out.println("Log Out is successful");
 	    		// remove patient from session
@@ -71,6 +62,26 @@ public class PatientAuthController extends HttpServlet {
 	    	    // send patient home
 	    	    response.sendRedirect("home.jsp");
 	            break;
+	        case "/signup":
+	            request.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(request, response);
+	            break;
+	        case "/signupVerification":
+	        	System.out.println("GET request received for signupVerification");
+	        	System.out.println("sending token for post request");
+	            String signupToken = request.getParameter("token");
+	            System.out.println("Token: " + signupToken);
+	            doPost(request, response);
+	            break;
+	        case "/forget_password":
+	            request.getRequestDispatcher("/WEB-INF/views/auth/forget_password.jsp").forward(request, response);
+	            break;
+	        case "/resetPasswordVerification":
+	        	System.out.println("GET request received for resetPasswordVerification");
+	        	System.out.println("sending forget password token for post request");
+	            String resetPasswordToken = request.getParameter("token");
+	            System.out.println("Token: " + resetPasswordToken);
+	            doPost(request, response);
+            break;
 	        default:
 	            response.sendError(HttpServletResponse.SC_NOT_FOUND);
 	    }
@@ -93,6 +104,15 @@ public class PatientAuthController extends HttpServlet {
             case "/signupVerification":
             	signupVerification(request, response);
                 break;
+            case "/sendPasswordResetEmail":
+            	sendPasswordResetEmail(request, response);
+            	break;
+            case "/resetPasswordVerification":
+            	resetPasswordVerification(request, response);
+            	break;	
+            case "/changePassword":
+            	changePassword(request, response);
+            	break;	
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -236,6 +256,8 @@ public class PatientAuthController extends HttpServlet {
 	    // remove patient token from db
 	    if(patientTokenDAO.deletePatientToken(patientToken)) {
 	    	System.out.println("token deleted");
+	    }else { 
+	    	System.out.println("token could not get deleted");
 	    }
 		
 	    // create a session for the verified patient
@@ -248,6 +270,7 @@ public class PatientAuthController extends HttpServlet {
 	private void login(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
 		String email = request.getParameter("email");
 	    String password = request.getParameter("password");
+	    System.out.println("email: "+ email + "password:" + password);
 
 	    // Check for null or empty values and perform input validation
 	    if (email == null || password == null || email.isEmpty() || password.isEmpty() ) {
@@ -306,4 +329,161 @@ public class PatientAuthController extends HttpServlet {
 	}
 	
 
+	private void sendPasswordResetEmail(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
+		String email = request.getParameter("email");
+
+	    // Check for null or empty values and perform input validation
+	    if (email == null || email.isEmpty() ) {
+	        response.getWriter().append("Invalid input parameters");
+	        return;
+	    }
+	    
+	    // Validate email format
+	    if (!SecurityUtil.isValidEmail(email)) {
+	        response.getWriter().append("Invalid email format.");
+	        return;
+	    }
+	    
+        System.out.println("email: " + email);
+        
+        Patient patient = patientDAO.getPatientByEmail(email);
+        // Checking if the patient object is null
+        if (patient == null) {
+            request.setAttribute("errorMessage", "Patient with email " + email + " not found.");
+            // Forward the request to a JSP page to display the error message
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            return;
+        }
+        
+     // Create a verification code 
+	    PatientToken patientToken = new PatientToken();
+	    patientToken.setPatient(patient);
+	    patientToken.setToken(SecurityUtil.generateToken());
+	    patientToken.setTokenType(TokenType.reset_password);
+	    patientToken.setExpiresAt(SecurityUtil.calculateTokenExpirationDateTime());
+	    
+	    System.out.println(patientToken);
+	    patientTokenDAO.createPatientToken(patientToken);
+	    
+	    // create verification link :
+	    // not necessary but good for compatibility, so this is why i use URLEncode for special characters
+	    //String encodedToken = URLEncoder.encode(patientToken.getToken(), StandardCharsets.UTF_8);
+	    String verificationLink = "http://localhost:8080" + request.getContextPath() + "/resetPasswordVerification?token=" + patientToken.getToken(); //encodedToken;
+	    System.out.println(verificationLink);
+	    
+	    // Send email for verification
+//	    try {
+//	        EmailUtil.sendEmail(patient.getEmail(), "Email Verification", verificationLink);
+//	        System.out.println("email is sent");
+//	    } catch (MessagingException e) {
+//	        System.out.println("Failed to send verification email.");
+//	        e.printStackTrace();
+//	    }
+	    System.out.println("Email is sent (disabled it for now since it works):");
+        
+	}
+	
+	public void resetPasswordVerification(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
+		// get token token from the request parameter
+		
+	    String token = request.getParameter("token");
+	    System.out.println("received token in post:" + token);
+	    
+	    if (token == null || token.isEmpty()) {
+	        response.getWriter().append("token is null or empty");
+	        return;
+	    }
+
+	    // get patientToken from db using the token
+	    PatientToken patientToken = patientTokenDAO.getPatientTokenByToken(token);
+
+	    if (patientToken == null) {
+	        response.getWriter().append("PatientToken not found in db");
+	        return;
+	    }
+
+	    // checking if the token is expired
+	    LocalDateTime tokenFromDBExperationDateTime = patientToken.getExpiresAt();
+	    Boolean isTokenExpired = SecurityUtil.isTokenExpired(tokenFromDBExperationDateTime);
+	    if (isTokenExpired) {
+	        response.getWriter().append("Reset password token has expired");
+	        return;
+	    }
+	    
+	    Patient patient = patientToken.getPatient();
+	    request.getSession().setAttribute("patient", patient);
+	    
+	    // remove patient token from db
+	    if(patientTokenDAO.deletePatientToken(patientToken)) {
+	    	System.out.println("token deleted");
+	    }else { 
+	    	System.out.println("token could not get deleted");
+	    }
+        request.getRequestDispatcher("/WEB-INF/views/auth/change_password.jsp").forward(request, response);
+	    
+	}
+	
+	public void changePassword(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
+		
+        Patient patient = (Patient) request.getSession().getAttribute("patient");
+
+        // Checking if the patient object is null
+        if (patient == null) {
+        	request.setAttribute("errorMessage", "Error cant get Patient from session");
+            // Forward the request to a JSP page to display the error message
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            return; 
+        } 
+
+        String old_password = request.getParameter("old_password");
+	    String new_password = request.getParameter("new_password");
+
+	    // Check for null or empty values and perform input validation
+	    if (old_password == null || old_password == null || new_password.isEmpty() || new_password.isEmpty() ) {
+	        response.getWriter().append("Invalid input parameters");
+	        return;
+	    }
+	    // Validate password complexity (e.g., minimum length, special characters, etc.)
+	    if (!SecurityUtil.isValidPassword(old_password)) {
+	        response.getWriter().append("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+	        return;
+	    }
+	    // Validate password complexity (e.g., minimum length, special characters, etc.)
+	    if (!SecurityUtil.isValidPassword(new_password)) {
+	        response.getWriter().append("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+	        return;
+	    }
+	    
+        System.out.println("old_password: " + old_password);
+        System.out.println("new_password: " + new_password);
+	    
+        // verifying if inputed password is the same as the stored hashed password
+        Boolean isOldPasswordCorrect = false;
+        String StoredHashedPassword = patient.getPassword();
+        try {
+        	isOldPasswordCorrect = SecurityUtil.verifyPassword(old_password, StoredHashedPassword);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+        
+	    if (!isOldPasswordCorrect) {
+        	request.setAttribute("errorMessage", "Password not correct");
+            // Forward the request to a JSP page to display the error message
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            return; 
+	    } 
+	    
+	    String HashedNewPassword = null;
+	    try {
+			HashedNewPassword = SecurityUtil.hashPassword(new_password);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+	    if (HashedNewPassword == null) {
+	    	System.out.print("hashed new password is not hashed");
+	    	return;
+	    }
+	    patientDAO.updatePatientPassword(patient, HashedNewPassword);
+	    
+	}
 }

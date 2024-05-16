@@ -54,4 +54,22 @@ public class PatientTokenDAO {
 	        return false;
 	    }
 	}
+	
+//	public Patient getPatientByToken(String token) {
+//	    try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+//	        PatientToken patientToken = session.createQuery("FROM PatientToken WHERE token = :token", PatientToken.class)
+//	                                    .setParameter("token", token)
+//	                                    .uniqueResult();
+//	        if (patientToken != null) {
+//	            return patientToken.getPatient();
+//	        } else {
+//	            System.out.println("Patient not found from getPatientByToken");
+//	            return null; 
+//	        }
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	        return null;
+//	    }
+//	}
+
 }

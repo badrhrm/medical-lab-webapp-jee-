@@ -84,5 +84,28 @@ public class PatientDAO {
             return false;
         }
     }
+    
+    public boolean updatePatientPassword(Patient patient, String newPassword) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            // set the new password in the object
+            patient.setPassword(newPassword);
+
+            // update the patient entity
+            session.update(patient);
+
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
 
