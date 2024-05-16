@@ -19,7 +19,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="${pageContext.request.contextPath}/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/sb-admin-2.css" rel="stylesheet">
 
 </head>
 
@@ -84,16 +84,16 @@
                                             id="exampleRepeatPassword" placeholder="Repeat Password">
                                     </div>
                                 </div>
-                                <a href="login.html" class="btn btn-primary btn-user btn-block">
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
                                     Register Account
-                                </a>
+                                </button>
                             </form>
                             <hr>
                             <div class="text-center">
-                                <a class="small" href="forgot-password.html">Forgot Password?</a>
+                                <a class="small" href="${pageContext.request.contextPath}/forgot-password">Forgot Password?</a>
                             </div>
                             <div class="text-center">
-                                <a class="small" href="login.html">Already have an account? Login!</a>
+                                <a class="small" href="${pageContext.request.contextPath}/login">Already have an account? Login!</a>
                             </div>
                         </div>
                     </div>

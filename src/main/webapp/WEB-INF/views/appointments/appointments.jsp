@@ -81,7 +81,7 @@
 					<div class="row p-2">
 						<div class="container d-flex justify-content-end align-items-end">
 
-							<a href="${pageContext.request.contextPath}/appointments/new"
+							<a href="${pageContext.request.contextPath}/appointments_new"
 								class="btn btn-primary btn-icon-split ml-2"> <span
 								class="icon text-white-50"> <i class="fas fa-plus"></i>
 							</span> <span class="text">New </span>
@@ -105,6 +105,18 @@
 							List<Appointment> apts = (List<Appointment>) request.getAttribute("apts");
 							%>
 							<div class="table-responsive">
+								<%
+								String errors = (String) request.getAttribute("errors");
+								if (errors != null) {
+								%>
+								<div class="row mt-5">
+									<ul class="text-danger">
+										<li>${ errors }</li>
+									</ul>
+								</div>
+								<%
+								}
+								%>
 								<table class="table table-bordered" id="dataTable" width="100%"
 									cellspacing="0">
 									<thead>
@@ -138,12 +150,12 @@
 												<div class="d-flex justify-content-end align-items-end">
 
 													<a
-														href="${pageContext.request.contextPath}/appointments/delete?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments_delete?id=<%=apt.getId() %>"
 														class="btn btn-danger btn-icon-split"> <span
 														class="icon text-white-50"> <i class="fas fa-trash"></i>
 													</span>
 													</a> <a
-														href="${pageContext.request.contextPath}/appointments/update?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments_update?id=<%=apt.getId() %>"
 														class="btn btn-warning btn-icon-split ml-2"> <span
 														class="icon text-white-50"> <i class="fas fa-edit"></i>
 													</span>
@@ -164,26 +176,10 @@
 							}
 							%>
 						</div>
+
 					</div>
 
-					<%
-					List<String> errors = (List<String>) request.getAttribute("errors");
-					if (errors != null) {
-					%>
-					<div class="row mt-5">
-						<ul class="text-danger">
-							<%
-							for (String err : errors) {
-							%>
-							<li>${ err }</li>
-							<%
-							}
-							%>
-						</ul>
-					</div>
-					<%
-					}
-					%>
+
 
 					<!-- TODO: custom content here -->
 
