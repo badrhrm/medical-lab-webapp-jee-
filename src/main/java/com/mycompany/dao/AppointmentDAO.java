@@ -75,12 +75,12 @@ public class AppointmentDAO {
      * @param apt
      * @return 
      */
-    public boolean deleteAppoint(Appointment apt) {
+    public boolean deleteAppoint(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             Query query = session.createNativeQuery("UPDATE appointments_jee SET state = :state WHERE id = :id", Appointment.class);
             query.setParameter("state", AptState.CANCELED);
-            query.setParameter("id", apt.getId());
+            query.setParameter("id", id);
             int rowCount = query.executeUpdate();
             session.getTransaction().commit();
             return rowCount > 0;
@@ -95,6 +95,19 @@ public class AppointmentDAO {
      * @return 
      */
     public Appointment getAppointById(int id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            Query query = session.createNativeQuery("select * from appointments_jee where id = :id", Appointment.class);
+            query.setParameter("id", id);
+            Appointment appointment = (Appointment) query.uniqueResult();
+            session.getTransaction().commit();
+            return appointment;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public Appointment deleteAppointById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
             Query query = session.createNativeQuery("select * from appointments_jee where id = :id", Appointment.class);

@@ -105,6 +105,18 @@
 							List<Appointment> apts = (List<Appointment>) request.getAttribute("apts");
 							%>
 							<div class="table-responsive">
+								<%
+								String errors = (String) request.getAttribute("errors");
+								if (errors != null) {
+								%>
+								<div class="row mt-5">
+									<ul class="text-danger">
+										<li>${ errors }</li>
+									</ul>
+								</div>
+								<%
+								}
+								%>
 								<table class="table table-bordered" id="dataTable" width="100%"
 									cellspacing="0">
 									<thead>
@@ -164,26 +176,10 @@
 							}
 							%>
 						</div>
+
 					</div>
 
-					<%
-					List<String> errors = (List<String>) request.getAttribute("errors");
-					if (errors != null) {
-					%>
-					<div class="row mt-5">
-						<ul class="text-danger">
-							<%
-							for (String err : errors) {
-							%>
-							<li>${ err }</li>
-							<%
-							}
-							%>
-						</ul>
-					</div>
-					<%
-					}
-					%>
+
 
 					<!-- TODO: custom content here -->
 

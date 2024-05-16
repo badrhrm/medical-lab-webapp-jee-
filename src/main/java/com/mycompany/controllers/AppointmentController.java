@@ -23,7 +23,7 @@ import com.mycompany.utils.AptState;
 /**
  * Servlet implementation class AppointmentController
  */
-@WebServlet(urlPatterns = { "/appointments", "/appointments/new", "/appointments/add", "/appointments/update",
+@WebServlet({ "/appointments", "/appointments/new", "/appointments/add", "/appointments/update",
 		"/appointments/edit", "/appointments/delete" })
 public class AppointmentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -51,7 +51,6 @@ public class AppointmentController extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getServletPath();
-		String id;
 		switch (action) {
 		case "/appointments/new":
 			// get all tests
@@ -62,23 +61,7 @@ public class AppointmentController extends HttpServlet {
 			break;
 		case "/appointments/update":
 			// retrieve id from params
-			id = request.getParameter("id");
-			// get apt to be updated.. if not exits redirect to 404
-			
-			if (id == null && id.isEmpty()) {
-				request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
-				aptHome(request, response);
-			} 
-			
-			Patient p = pdao.getPatientById(Integer.parseInt(id));
-			if (p == null) {
-				request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
-				aptHome(request, response);
-			}
-			
-			request.setAttribute("patient", p);
-			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
-					response);
+			handleUpdate(request, response);
 			// send it with the response to fill the form inputs
 
 			break;
@@ -103,50 +86,11 @@ public class AppointmentController extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getServletPath();
-		System.out.println("----------------------------------");
-		System.out.println(action);
-		System.out.println("----------------------------------");
+
 		switch (action) {
 		case "/appointments/add":
 			// get all tests
-			String time = request.getParameter("from");
-			String day = request.getParameter("day");
-			String cin = request.getParameter("cin");
-			int test_id = Integer.parseInt(request.getParameter("test"));
-
-			Patient p = pdao.getPatientById(test_id);
-			if (p == null) {
-				List<String> errors = new ArrayList<String>();
-				errors.add("no patient with the given cin");
-				request.setAttribute("errors", errors);
-				request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
-						response);
-				break;
-			}
-
-			// get test
-			Test t = tdao.getTestById(test_id);
-
-			// check if apt availabe (later)
-
-			// save apt
-			Appointment newapt = new Appointment();
-			newapt.setPatient(p);
-			newapt.setTest(t);
-			newapt.setDay(LocalDate.parse(day));
-			newapt.setHour(LocalTime.parse(time));
-			newapt.setState(AptState.PENDING);
-
-			if (dao.saveAppoint(newapt)) {
-				request.setAttribute("success", "Appointment added successfully");
-				request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
-						response);
-			} else {
-				request.setAttribute("errors", new ArrayList().add("Appointment was not saved"));
-				request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request,
-						response);
-			}
-
+			handleAdd(request, response);
 			break;
 		case "/appointments/edit":
 			// retrieve id from params
@@ -176,24 +120,83 @@ public class AppointmentController extends HttpServlet {
 
 	private void handleDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		String id = request.getParameter("id");
-		System.out.println("----------------------------------");
-		System.out.println(id);
-		System.out.println("----------------------------------");
 		// get apt to be deleted.. if not exits redirect to 404
 		if (id == null && id.isEmpty()) {
-			request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
+			request.setAttribute("errors", "no id given");
 			aptHome(request, response);
-		} 
-		
-		Patient p = pdao.getPatientById(Integer.parseInt(id));
-		if (p == null) {
-			request.setAttribute("errors", new ArrayList().add("No patient with the given id"));
-			aptHome(request, response);
+			return;
 		}
+
+		if (dao.getAppointById(Integer.parseInt(id)) == null) {
+			request.setAttribute("errors", "no appointment ::: with given id");
+			aptHome(request, response);
+			return;
+		}
+		dao.deleteAppoint(Integer.parseInt(id));
+		response.sendRedirect(request.getContextPath() + "/appointments");
+	}
+
+	private void handleUpdate(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String id = request.getParameter("id");
+		// get apt to be updated.. if not exits redirect to 404
+
+		if (id == null && id.isEmpty()) {
+			request.setAttribute("errors", new ArrayList().add("No appointment with the given id"));
+			aptHome(request, response);
+			return;
+		}
+
+		Appointment apt = dao.getAppointById(Integer.parseInt(id));
+		if (apt == null) {
+			request.setAttribute("errors", new ArrayList().add("No appointment with the given id"));
+			aptHome(request, response);
+			return;
+		}
+
+		request.setAttribute("apt", apt);
+		request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
+	}
+
+	private void handleAdd(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		
-		pdao.deletePatient(p);
-		response.sendRedirect(request.getContextPath() + "/apts");
+		String time = request.getParameter("from");
+		String day = request.getParameter("day");
+		String cin = request.getParameter("cin");
+		int test_id = Integer.parseInt(request.getParameter("test"));
+
+		Patient p = pdao.getPatientById(test_id);
+		if (p == null) {
+			List<String> errors = new ArrayList<String>();
+			errors.add("no patient with the given cin");
+			request.setAttribute("errors", errors);
+			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
+			break;
+		}
+
+		// get test
+		Test t = tdao.getTestById(test_id);
+
+		// check if apt availabe (later)
+
+		// save apt
+		Appointment newapt = new Appointment();
+		newapt.setPatient(p);
+		newapt.setTest(t);
+		newapt.setDay(LocalDate.parse(day));
+		newapt.setHour(LocalTime.parse(time));
+		newapt.setState(AptState.PENDING);
+
+		if (dao.saveAppoint(newapt)) {
+			request.setAttribute("success", "Appointment added successfully");
+			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
+		} else {
+			request.setAttribute("errors", new ArrayList().add("Appointment was not saved"));
+			request.getRequestDispatcher("/WEB-INF/views/appointments/appointmentform.jsp").forward(request, response);
+		}
 	}
 
 }
