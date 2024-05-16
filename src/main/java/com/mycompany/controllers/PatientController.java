@@ -177,7 +177,7 @@ public class PatientController extends HttpServlet {
 		String birthdateStr = request.getParameter("birthdate");
 		
 		// Print all parameters
-		System.out.println("New Patient INFO TO UPDATE" + id);
+		System.out.println("New Patient INFO TO UPDATE");
 		System.out.println("ID: " + id);
 		System.out.println("First Name: " + fName);
 		System.out.println("Last Name: " + lName);
@@ -223,7 +223,7 @@ public class PatientController extends HttpServlet {
 	    
 
         // Create Patient object
-        Patient patient = new Patient();
+        Patient patient = patientDAO.getPatientById(id);
         patient.setFName(fName);
         patient.setLName(lName);
         patient.setCin(cin);

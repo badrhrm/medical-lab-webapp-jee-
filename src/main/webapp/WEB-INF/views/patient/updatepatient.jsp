@@ -94,9 +94,9 @@
 									<select class="form-control form-control-user" name="gender"
 										id="selectGender">
 										<option value="Male"
-											${patient.getGender().equals("male") ? "selected" : ""}>Male</option>
+											${patient.getGender().equals("Male") ? "selected" : ""}>Male</option>
 										<option value="Female"
-											${patient.getGender().equals("female") ? "selected" : ""}>Female</option>
+											${patient.getGender().equals("Female") ? "selected" : ""}>Female</option>
 									</select>
 								</div>
 								<div class="form-group">
