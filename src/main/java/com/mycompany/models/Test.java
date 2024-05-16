@@ -29,7 +29,7 @@ public class Test {
     public Test() {
     }
 
-    public Test(String label, double price, int result_after, String description) {
+    public Test(String label, double price, int result_after) {
         this.label = label;
         this.price = price;
         this.result_after = result_after;
