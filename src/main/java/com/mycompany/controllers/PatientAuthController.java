@@ -189,36 +189,19 @@ public class PatientAuthController extends HttpServlet {
 	    
 	    // create verification link :
 	    // not necessary but good for compatibility, so this is why i use URLEncode for special characters
-	    //String encodedToken = URLEncoder.encode(patientToken.getToken(), StandardCharsets.UTF_8);
-	    String verificationLink = "http://localhost:8080" + request.getContextPath() + "/signupVerification?token=" + patientToken.getToken(); //encodedToken;
+	    String encodedToken = URLEncoder.encode(patientToken.getToken(), StandardCharsets.UTF_8);
+	    String verificationLink = "http://localhost:8080" + request.getContextPath() + "/signupVerification?token=" + encodedToken;
 	    System.out.println(verificationLink);
 	    
 	    // Send email for verification
-//	    try {
-//	        EmailUtil.sendEmail(patient.getEmail(), "Email Verification", verificationLink);
-//	        System.out.println("email is sent");
-//	    } catch (MessagingException e) {
-//	        System.out.println("Failed to send verification email.");
-//	        e.printStackTrace();
-//	    }
-	    System.out.println("Email is sent (disabled it for now since it works):");
-
-//	    // Create patient and handle response
-//	    Boolean isPatientCreated = patientDAO.createPatient(patient);
-//	    
-//	    if (isPatientCreated) {
-//	        System.out.println("Account is created successfully");
-//	        response.getWriter().append("Account is created successfully");
-//	        //request.getSession().setAttribute("user", user);
-//	    } else {
-//
-//	        System.out.println("Account creation failed");
-//	        response.getWriter().append("Account creation failed");
-//	        //request.setAttribute("error", "Invalid username or password");
-//	        // Redirect to a different URL using GET method 
-//	        // (since using dispatcher does refresh page so i end it up resending previous data)
-//	        //response.sendRedirect(request.getContextPath() + "/login");
-//	    }
+	    try {
+	        EmailUtil.sendEmail(patient.getEmail(), "Email Verification", verificationLink);
+	        System.out.println("email is sent");
+	    } catch (MessagingException e) {
+	        System.out.println("Failed to send verification email.");
+	        e.printStackTrace();
+	    }
+	    System.out.println("Email is sent ");
 	}
 	private void signupVerification(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
 		// get token token from the request parameter
@@ -249,9 +232,6 @@ public class PatientAuthController extends HttpServlet {
 
 	    // get the associated patient from the patient token
 	    Patient patient = patientToken.getPatient();
-	    // make patient verified 
-	    //patient.setVerified(true); 
-	    //patientDAO.updatePatient(patient);
 
 	    // remove patient token from db
 	    if(patientTokenDAO.deletePatientToken(patientToken)) {
@@ -321,10 +301,6 @@ public class PatientAuthController extends HttpServlet {
 	    } else {
 	        System.out.println("Login failed");
 	        response.getWriter().append("Login failed");
-	        //request.setAttribute("error", "Invalid username or password");
-	        // Redirect to a different URL using GET method 
-	        // (since using dispatcher does refresh page so i end it up resending previous data)
-	        //response.sendRedirect(request.getContextPath() + "/login");
 	    }
 	}
 	
@@ -367,19 +343,19 @@ public class PatientAuthController extends HttpServlet {
 	    
 	    // create verification link :
 	    // not necessary but good for compatibility, so this is why i use URLEncode for special characters
-	    //String encodedToken = URLEncoder.encode(patientToken.getToken(), StandardCharsets.UTF_8);
-	    String verificationLink = "http://localhost:8080" + request.getContextPath() + "/resetPasswordVerification?token=" + patientToken.getToken(); //encodedToken;
+	    String encodedToken = URLEncoder.encode(patientToken.getToken(), StandardCharsets.UTF_8);
+	    String verificationLink = "http://localhost:8080" + request.getContextPath() + "/resetPasswordVerification?token=" + encodedToken;
 	    System.out.println(verificationLink);
 	    
 	    // Send email for verification
-//	    try {
-//	        EmailUtil.sendEmail(patient.getEmail(), "Email Verification", verificationLink);
-//	        System.out.println("email is sent");
-//	    } catch (MessagingException e) {
-//	        System.out.println("Failed to send verification email.");
-//	        e.printStackTrace();
-//	    }
-	    System.out.println("Email is sent (disabled it for now since it works):");
+	    try {
+	        EmailUtil.sendEmail(patient.getEmail(), "Email Verification", verificationLink);
+	        System.out.println("email is sent");
+	    } catch (MessagingException e) {
+	        System.out.println("Failed to send verification email.");
+	        e.printStackTrace();
+	    }
+	    System.out.println("Email is sent");
         
 	}
 	
