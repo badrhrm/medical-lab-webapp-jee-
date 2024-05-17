@@ -201,7 +201,6 @@ public class PatientAuthController extends HttpServlet {
 	        System.out.println("Failed to send verification email.");
 	        e.printStackTrace();
 	    }
-	    System.out.println("Email is sent ");
 	}
 	private void signupVerification(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
 		// get token token from the request parameter
@@ -355,7 +354,6 @@ public class PatientAuthController extends HttpServlet {
 	        System.out.println("Failed to send verification email.");
 	        e.printStackTrace();
 	    }
-	    System.out.println("Email is sent");
         
 	}
 	
