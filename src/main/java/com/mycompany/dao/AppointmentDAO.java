@@ -261,7 +261,6 @@ public class AppointmentDAO {
                 FROM appointments_jee
                 WHERE `day` = CURDATE()
                   AND `state` = :state
-                  AND (HOUR(`hour`) > HOUR(CURTIME()) OR (HOUR(`hour`) = HOUR(CURTIME()) AND MINUTE(`hour`) >= MINUTE(CURTIME())))
                 ORDER BY HOUR(`hour`), MINUTE(`hour`);
             """, Appointment.class);
             query.setParameter("state", AptState.PENDING);

@@ -111,7 +111,7 @@ public class AdminAuthController extends HttpServlet {
 		    request.getSession().setAttribute("admin", admin);
 
 		    // redirect to the homepage
-		    response.sendRedirect("home.jsp");
+		    response.sendRedirect(request.getContextPath() + "/dashboard");
 	    } else {
 	        System.out.println("Login failed");
 	        response.getWriter().append("Login failed");

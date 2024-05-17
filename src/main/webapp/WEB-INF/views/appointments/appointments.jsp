@@ -16,7 +16,7 @@
 <meta name="description" content="" />
 <meta name="author" content="" />
 
-<title></title>
+<title>Appointments</title>
 
 <!-- Custom fonts for this template-->
 <link
@@ -60,9 +60,8 @@
 							class="nav-link dropdown-toggle" href="#" id="userDropdown"
 							role="button" data-toggle="dropdown" aria-haspopup="true"
 							aria-expanded="false"> <span
-								class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas
-									McGee</span> <img class="img-profile rounded-circle"
-								src="img/undraw_profile.svg" />
+								class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span> <img class="img-profile rounded-circle"
+								src="${pageContext.request.contextPath}/img/undraw_profile.svg" />
 						</a></li>
 					</ul>
 				</nav>
@@ -81,7 +80,7 @@
 					<div class="row p-2">
 						<div class="container d-flex justify-content-end align-items-end">
 
-							<a href="${pageContext.request.contextPath}/appointments_new"
+							<a href="${pageContext.request.contextPath}/appointments/new"
 								class="btn btn-primary btn-icon-split ml-2"> <span
 								class="icon text-white-50"> <i class="fas fa-plus"></i>
 							</span> <span class="text">New </span>
@@ -150,12 +149,12 @@
 												<div class="d-flex justify-content-end align-items-end">
 
 													<a
-														href="${pageContext.request.contextPath}/appointments_delete?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments/delete?id=<%=apt.getId() %>"
 														class="btn btn-danger btn-icon-split"> <span
 														class="icon text-white-50"> <i class="fas fa-trash"></i>
 													</span>
 													</a> <a
-														href="${pageContext.request.contextPath}/appointments_update?id=<%=apt.getId() %>"
+														href="${pageContext.request.contextPath}/appointments/update?id=<%=apt.getId() %>"
 														class="btn btn-warning btn-icon-split ml-2"> <span
 														class="icon text-white-50"> <i class="fas fa-edit"></i>
 													</span>

@@ -23,14 +23,6 @@ public class PatientDAO {
         }
     }
     
-    public Patient getPatientById(int id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Patient.class, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
     
     public boolean createPatient(Patient patient) {
         Transaction transaction = null;
@@ -77,6 +69,7 @@ public class PatientDAO {
             return false;
         }
     }
+    
     public void deletePatientById(int id) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -86,16 +79,10 @@ public class PatientDAO {
             // Retrieve the patient by ID
             Patient patient = session.get(Patient.class, id);
 
-            // If the patient exists, delete it
-            if (patient != null) {
-                session.delete(patient);
-                // Commit the transaction
-                transaction.commit();
-            }
+            session.delete(patient);
+            transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+
             e.printStackTrace();
         }
     }
@@ -138,7 +125,7 @@ public class PatientDAO {
             return false;
         }
     }
-<<<<<<< HEAD
+
     
     public Patient getPatientById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -161,8 +148,5 @@ public class PatientDAO {
             return null;
         }
     }
-=======
-
->>>>>>> c4663329ad7e55055516c565b313743c1724f0e6
 }
 

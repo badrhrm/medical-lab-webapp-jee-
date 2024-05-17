@@ -13,7 +13,7 @@
 <meta name="description" content="" />
 <meta name="author" content="" />
 
-<title></title>
+<title>Add Appointment</title>
 
 <!-- Custom fonts for this template-->
 <link
@@ -57,9 +57,8 @@
 							class="nav-link dropdown-toggle" href="#" id="userDropdown"
 							role="button" data-toggle="dropdown" aria-haspopup="true"
 							aria-expanded="false"> <span
-								class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas
-									McGee</span> <img class="img-profile rounded-circle"
-								src="img/undraw_profile.svg" />
+								class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span> <img class="img-profile rounded-circle"
+								src="${pageContext.request.contextPath}/img/undraw_profile.svg" />
 						</a></li>
 					</ul>
 				</nav>
@@ -76,11 +75,13 @@
 					<!-- TODO: custom content here -->
 					<div class="row">
 						<div class="col-12">
-							<form class="user " action="${pageContext.request.contextPath}/appointments/add" method="POST">
+							<form class="user "
+								action="${pageContext.request.contextPath}/appointments/add"
+								method="POST">
 								<div class="form-group row">
 									<div class="col-sm-6 mb-3 mb-sm-0">
-										<label for="from">Starting form</label>
-										<select class="form-control text-dark form-control-user" name="from"
+										<label for="from">Starting form</label> <select
+											class="form-control text-dark form-control-user" name="from"
 											id="from">
 											<%-- Add options for time intervals --%>
 											<%-- Time interval from 08:00 to 12:00 --%>
@@ -123,32 +124,32 @@
 										</select>
 									</div>
 									<div class="col-sm-6">
-									<label for="day">Day of the appointment</label>
-										<input type="date" name="day"
-											class="form-control form-control-user" id=""
-											placeholder="Appointment day">
+										<label for="day">Day of the appointment</label> <input
+											type="date" name="day" class="form-control form-control-user"
+											id="" placeholder="Appointment day">
 									</div>
 								</div>
 								<div class="form-group row">
 									<div class="col-sm-6 mb-3 mb-sm-0">
-									<label for="cin">Patient Cin</label>
-										<input type="text" name="cin"
-											class="form-control form-control-user" id="cin"
+										<label for="cin">Patient Cin</label> <input type="text"
+											name="cin" class="form-control form-control-user" id="cin"
 											placeholder="cin">
 									</div>
 									<div class="col-sm-6">
-									<label for="test">Test to pass</label>
-										<select class="form-control form-control-user" name="test"
-											id="test">
+										<label for="test">Test to pass</label> <select
+											class="form-control form-control-user" name="test" id="test">
 											<option value="1">Blood test</option>
 											<option value="2">Diagnostique</option>
 											<%
 											List<Test> tests = (List<Test>) request.getAttribute("tests");
-											if( tests != null ) {
-											for(Test test: tests) { 
+											if (tests != null) {
+												for (Test test : tests) {
 											%>
 											<option value="${test.getId()}">${test.getLabel()}</option>
-											<%}}%>
+											<%
+											}
+											}
+											%>
 										</select>
 									</div>
 								</div>
@@ -157,8 +158,8 @@
 
 								<!-- if there are errors -->
 								<%
-								List<String> errors = (List<String>) request.getAttribute("errors");
-								if (errors != null) {
+								if (request.getAttribute("errors") != null) {
+									List<String> errors = (List<String>) request.getAttribute("errors");
 								%>
 								<div class="row mt-5">
 									<ul class="text-danger">
@@ -175,13 +176,13 @@
 								}
 								%>
 								<!--  -->
-								<% 
+								<%
 								String success = (String) request.getAttribute("success");
-								if(success != null) {
+								if (success != null) {
 								%>
 								<div class="row mt-5">
 									<ul class="text-success">
-										<li><%=success %></li>
+										<li><%=success%></li>
 									</ul>
 								</div>
 								<%}%>

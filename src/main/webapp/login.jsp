@@ -81,7 +81,7 @@
 									</div>
 									<div class="text-center">
 										<a class="small"
-											href="${pageContext.request.contextPath}/signup">Create an
+											href="${pageContext.request.contextPath}/login">Create an
 											Account!</a>
 									</div>
 								</div>

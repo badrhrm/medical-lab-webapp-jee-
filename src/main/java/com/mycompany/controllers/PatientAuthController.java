@@ -60,7 +60,7 @@ public class PatientAuthController extends HttpServlet {
 	    		// remove patient from session
 	    	    request.getSession().invalidate();
 	    	    // send patient home
-	    	    response.sendRedirect("home.jsp");
+	    	    request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
 	            break;
 	        case "/signup":
 	            request.getRequestDispatcher("/WEB-INF/views/auth/signup.jsp").forward(request, response);
@@ -283,6 +283,7 @@ public class PatientAuthController extends HttpServlet {
 	        response.getWriter().append("Invalid email format.");
 	        return;
 	    }
+	    
 	    // Validate password complexity (e.g., minimum length, special characters, etc.)
 	    if (!SecurityUtil.isValidPassword(password)) {
 	        response.getWriter().append("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
@@ -317,10 +318,10 @@ public class PatientAuthController extends HttpServlet {
 		    request.getSession().setAttribute("patient", patient);
 
 		    // redirect to the homepage
-		    response.sendRedirect("home.jsp");
+		    response.sendRedirect(request.getContextPath() + "/appointments");
 	    } else {
 	        System.out.println("Login failed");
-	        response.getWriter().append("Login failed");
+	        request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
 	        //request.setAttribute("error", "Invalid username or password");
 	        // Redirect to a different URL using GET method 
 	        // (since using dispatcher does refresh page so i end it up resending previous data)
