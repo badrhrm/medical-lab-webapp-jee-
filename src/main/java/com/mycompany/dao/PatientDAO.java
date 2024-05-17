@@ -23,6 +23,15 @@ public class PatientDAO {
         }
     }
     
+    public Patient getPatientById(int id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Patient.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     public boolean createPatient(Patient patient) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -68,14 +77,57 @@ public class PatientDAO {
             return false;
         }
     }
+    public void deletePatientById(int id) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Begin a transaction
+            transaction = session.beginTransaction();
 
-    public boolean deletePatient(Patient patient) {
+            // Retrieve the patient by ID
+            Patient patient = session.get(Patient.class, id);
+
+            // If the patient exists, delete it
+            if (patient != null) {
+                session.delete(patient);
+                // Commit the transaction
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+//    public boolean deletePatient(Patient patient) {
+//        Transaction transaction = null;
+//        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+//            transaction = session.beginTransaction();
+//            
+//            session.delete(patient);
+//            
+//            transaction.commit();
+//            return true;
+//        } catch (Exception e) {
+//            if (transaction != null) {
+//                transaction.rollback();
+//            }
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+    
+    public boolean updatePatientPassword(Patient patient, String newPassword) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            
-            session.delete(patient);
-            
+
+            // set the new password in the object
+            patient.setPassword(newPassword);
+
+            // update the patient entity
+            session.update(patient);
+
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -86,6 +138,7 @@ public class PatientDAO {
             return false;
         }
     }
+<<<<<<< HEAD
     
     public Patient getPatientById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -108,5 +161,8 @@ public class PatientDAO {
             return null;
         }
     }
+=======
+
+>>>>>>> c4663329ad7e55055516c565b313743c1724f0e6
 }
 
